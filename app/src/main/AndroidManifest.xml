@@ -9,11 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Approved_Complaints"></activity>
+        <activity android:name=".Resolved_Complaints"></activity>
+        <activity android:name=".Approved_Complaints" />
         <activity
             android:name=".MyComplaints"
             android:label="My Complaints"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name=".raise_a_compalint" />
         <activity android:name=".Complain_raised_by_companions" />
         <activity android:name=".MainActivity">
