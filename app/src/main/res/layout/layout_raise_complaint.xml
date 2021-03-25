@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/loginCard"
+    app:cardCornerRadius="@dimen/loginCardRadius"
+    android:layout_width="match_parent"
+    android:elevation="5dp"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/whiteCardColor">
+
+    <LinearLayout
+        style="@style/linearParent"
+        android:layout_gravity="center"
+        android:padding="@dimen/loginViewsMargin">
+
+        <Spinner
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:maxLines="5"
+            android:inputType="textPersonName"
+            android:hint="Subject"
+            tools:layout_editor_absoluteX="162dp"
+            tools:layout_editor_absoluteY="126dp" />
+
+        <EditText
+            android:id="@+id/detailsofcompalint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:maxLines="20"
+            tools:layout_editor_absoluteX="120dp"
+            tools:layout_editor_absoluteY="234dp" />
+
+        <Button
+            android:id="@+id/signup"
+            style="@style/loginButton"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="Raise" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
