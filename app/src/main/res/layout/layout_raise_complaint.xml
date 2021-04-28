@@ -16,10 +16,19 @@
         android:layout_gravity="center"
         android:padding="@dimen/loginViewsMargin">
 
+
         <Spinner
             android:id="@+id/category"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
+
+        <EditText
+                android:id="@+id/customcategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Category"
+               />
+
 
         <EditText
             android:id="@+id/subject"
@@ -33,7 +42,7 @@
             tools:layout_editor_absoluteY="126dp" />
 
         <EditText
-            android:id="@+id/detailsofcompalint"
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
@@ -42,7 +51,7 @@
             tools:layout_editor_absoluteY="234dp" />
 
         <Button
-            android:id="@+id/signup"
+            android:id="@+id/raise"
             style="@style/loginButton"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"

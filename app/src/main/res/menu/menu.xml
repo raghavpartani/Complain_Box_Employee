@@ -6,5 +6,6 @@
           android:onClick="raise_a_complaint"/>
     <item android:title="My Complaints"
         android:onClick="my_complaints"/>
-    <item android:title="Logout" />
+    <item android:title="Logout"
+        android:onClick="logout"/>
 </menu>

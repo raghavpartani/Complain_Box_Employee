@@ -20,11 +20,16 @@ public class ArrayAdapterComplaints extends RecyclerView.Adapter<ArrayAdapterCom
     ArrayList<String> arrayList_subject;
     ArrayList<String> arrayList_emp_name;
     ArrayList<String> arrayList_complaint;
-    public ArrayAdapterComplaints(Context context, ArrayList<String> complaint, ArrayList<String> emp_name, ArrayList<String> subject) {
+    ArrayList<String> arrayList_complaint_id;
+    ArrayList<String> arrayList_upvoted_by_you_or_not;
+
+    public ArrayAdapterComplaints(Context context, ArrayList<String> complaint, ArrayList<String> emp_name, ArrayList<String> subject,ArrayList<String> complaint_id,ArrayList<String> upvoted_by_you_or_not) {
         this.context=context;
         this.arrayList_complaint=complaint;
         this.arrayList_subject=subject;
         this.arrayList_emp_name=emp_name;
+        this.arrayList_complaint_id=complaint_id;
+        this.arrayList_upvoted_by_you_or_not=upvoted_by_you_or_not;
     }
 
     @NonNull
@@ -40,6 +45,12 @@ public class ArrayAdapterComplaints extends RecyclerView.Adapter<ArrayAdapterCom
         holder.complaint.setText(arrayList_complaint.get(position));
         holder.emp_name.setText(arrayList_emp_name.get(position));
         holder.subject.setText(arrayList_subject.get(position));
+        holder.complaint_id.setText(arrayList_complaint_id.get(position));
+        holder.upvotedbyyouornot.setText(arrayList_upvoted_by_you_or_not.get(position));
+        if(arrayList_upvoted_by_you_or_not.get(position).equals("yes")){
+            holder.like.setColorFilter(context.getResources().getColor(R.color.primaryTextColor));
+        }
+
     }
 
     @Override
@@ -48,20 +59,24 @@ public class ArrayAdapterComplaints extends RecyclerView.Adapter<ArrayAdapterCom
     }
 
     public class Myholder extends RecyclerView.ViewHolder {
-        TextView complaint;TextView subject;TextView emp_name;
-        Button accept,reject;
+        TextView complaint;TextView subject;TextView emp_name;TextView complaint_id;TextView upvotedbyyouornot;
+        ImageView like;
+
         public Myholder(@NonNull View itemView) {
             super(itemView);
-
+            complaint_id=itemView.findViewById(R.id.complaint_id);
             complaint=itemView.findViewById(R.id.complaint);
             subject=itemView.findViewById(R.id.subject);
+            upvotedbyyouornot=itemView.findViewById(R.id.upvotedbyyouornot);
             emp_name=itemView.findViewById(R.id.raised_by);
-            final ImageView like=itemView.findViewById(R.id.like);
+
+            like=itemView.findViewById(R.id.like);
+
+            
             like.setColorFilter(context.getResources().getColor(R.color.grey));
             like.setOnClickListener(new View.OnClickListener() {
-                 boolean s=false;
-                public void onClick(View v) {
-
+                boolean s=false;
+                 public void onClick(View v) {
                     if(s){
                     like.setColorFilter(context.getResources().getColor(R.color.grey));
                     s=false;
