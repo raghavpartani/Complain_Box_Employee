@@ -3,6 +3,7 @@ package com.example.complain_box;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.complain_box.internetcheck.InternetCheck;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,18 +36,21 @@ public class raise_a_compalint extends AppCompatActivity {
     ArrayList <String>a;
     ArrayAdapter<String>arrayAdapter;
     Button raise;
+    ProgressDialog pd;
 
     String url="https://complainbox2000.000webhostapp.com/raise_a_complaint.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_raise_a_compalint);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         details=findViewById(R.id.description);
         sub=findViewById(R.id.subject);
         category=findViewById(R.id.category);
         raise=findViewById(R.id.raise);
         customcategory=findViewById(R.id.customcategory);
         customcategory.setEnabled(false);
+
 
         SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         final String email = sh.getString("email", "");
@@ -54,8 +59,7 @@ public class raise_a_compalint extends AppCompatActivity {
 
         final String emp_id = sh.getString("emp_id", "");
 
-
-        Toast.makeText(this, ""+company+name+email+emp_id, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, ""+company+name+email+emp_id, Toast.LENGTH_SHORT).show();
         a=new ArrayList<>();
         a.add("Category");
         a.add("Misconduct");
@@ -86,6 +90,11 @@ public class raise_a_compalint extends AppCompatActivity {
      raise.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
+
+
+             InternetCheck internetCheck=new InternetCheck();
+             boolean b=internetCheck.checkConnection(raise_a_compalint.this);
+
              if(category.getSelectedItem().toString().trim().equals("Category")){
                  Toast.makeText(raise_a_compalint.this, "Please select a category", Toast.LENGTH_SHORT).show();
              }
@@ -107,23 +116,34 @@ public class raise_a_compalint extends AppCompatActivity {
              else if(details.getText().toString().length()<15){
                  details.setError("Desription can't be too small");
              }
-             else {
+             else if(b) {
+                 raise.setEnabled(false);
+                 pd = new ProgressDialog(raise_a_compalint.this, R.style.MyAlertDialogStyle);
+                 pd.setTitle("Connecting Server");
+                 pd.setMessage("loading...");
+                 pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                 pd.show();
              StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                  @Override
                  public void onResponse(String response) {
+                     pd.dismiss();
                      if(response.trim().equals("Raised Successfully")) {
                          Toast.makeText(raise_a_compalint.this, "" + response, Toast.LENGTH_SHORT).show();
                          finish();
                      }
                      else {
-                         Toast.makeText(raise_a_compalint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
 
+                         raise.setEnabled(true);
+                         Toast.makeText(raise_a_compalint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                      }
                  }
              }, new Response.ErrorListener() {
                  @Override
                  public void onErrorResponse(VolleyError error) {
 
+                     raise.setEnabled(true);
+                     pd.dismiss();
+                     Toast.makeText(raise_a_compalint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                  }
              }){
                  @Nullable
@@ -148,7 +168,15 @@ public class raise_a_compalint extends AppCompatActivity {
              RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
              mque.add(stringRequest);
          }
+             else{
+                 Toast.makeText(raise_a_compalint.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
+             }
          }
      });
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
