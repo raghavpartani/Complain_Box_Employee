@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -24,12 +23,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.complain_box.internetcheck.InternetCheck;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class raise_a_compalint extends AppCompatActivity {
+public class RaiseComplaint extends AppCompatActivity {
 
     EditText sub,details,customcategory;
     Spinner category;
@@ -51,12 +49,10 @@ public class raise_a_compalint extends AppCompatActivity {
         customcategory=findViewById(R.id.customcategory);
         customcategory.setEnabled(false);
 
-
         SharedPreferences sh = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         final String email = sh.getString("email", "");
         final String company = sh.getString("company", "");
         final String name = sh.getString("name", "");
-
         final String emp_id = sh.getString("emp_id", "");
 
         //Toast.makeText(this, ""+company+name+email+emp_id, Toast.LENGTH_SHORT).show();
@@ -66,7 +62,7 @@ public class raise_a_compalint extends AppCompatActivity {
         a.add("Machinery");
         a.add("Other");
 
-        arrayAdapter=new ArrayAdapter<String>(raise_a_compalint.this,android.R.layout.simple_expandable_list_item_1,a);
+        arrayAdapter=new ArrayAdapter<String>(RaiseComplaint.this,android.R.layout.simple_expandable_list_item_1,a);
                category.setAdapter(arrayAdapter);
 
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -90,13 +86,11 @@ public class raise_a_compalint extends AppCompatActivity {
      raise.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-
-
              InternetCheck internetCheck=new InternetCheck();
-             boolean b=internetCheck.checkConnection(raise_a_compalint.this);
+             boolean b=internetCheck.checkConnection(RaiseComplaint.this);
 
              if(category.getSelectedItem().toString().trim().equals("Category")){
-                 Toast.makeText(raise_a_compalint.this, "Please select a category", Toast.LENGTH_SHORT).show();
+                 Toast.makeText(RaiseComplaint.this, "Please select a category", Toast.LENGTH_SHORT).show();
              }
 
              else if(category.getSelectedItem().toString().trim().equals("Other")){
@@ -117,24 +111,32 @@ public class raise_a_compalint extends AppCompatActivity {
                  details.setError("Desription can't be too small");
              }
              else if(b) {
-                 raise.setEnabled(false);
-                 pd = new ProgressDialog(raise_a_compalint.this, R.style.MyAlertDialogStyle);
-                 pd.setTitle("Connecting Server");
-                 pd.setMessage("loading...");
-                 pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                 pd.show();
+                 raise();
+            }
+             else{
+                 Toast.makeText(RaiseComplaint.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
+             }
+         }
+
+         private void raise() {
+             raise.setEnabled(false);
+             pd = new ProgressDialog(RaiseComplaint.this, R.style.MyAlertDialogStyle);
+             pd.setTitle("Connecting Server");
+             pd.setMessage("loading...");
+             pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+             pd.show();
              StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                  @Override
                  public void onResponse(String response) {
                      pd.dismiss();
                      if(response.trim().equals("Raised Successfully")) {
-                         Toast.makeText(raise_a_compalint.this, "" + response, Toast.LENGTH_SHORT).show();
+                         Toast.makeText(RaiseComplaint.this, "" + response, Toast.LENGTH_SHORT).show();
                          finish();
                      }
                      else {
 
                          raise.setEnabled(true);
-                         Toast.makeText(raise_a_compalint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                         Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                      }
                  }
              }, new Response.ErrorListener() {
@@ -143,7 +145,7 @@ public class raise_a_compalint extends AppCompatActivity {
 
                      raise.setEnabled(true);
                      pd.dismiss();
-                     Toast.makeText(raise_a_compalint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                  }
              }){
                  @Nullable
@@ -152,7 +154,7 @@ public class raise_a_compalint extends AppCompatActivity {
                      Map<String, String> map = new HashMap<>();
                      map.put("email", email);
                      map.put("name", name);
-                     map.put("company", company);
+                     map.put("company",company);
                      map.put("emp_id",emp_id);
                      map.put("subject", sub.getText().toString().trim());
                      map.put("description",details.getText().toString().trim());
@@ -167,10 +169,6 @@ public class raise_a_compalint extends AppCompatActivity {
              };
              RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
              mque.add(stringRequest);
-         }
-             else{
-                 Toast.makeText(raise_a_compalint.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
-             }
          }
      });
     }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     style="@style/loginParent"
-    tools:context=".MainActivity"
+    tools:context=".Login"
     android:background="#f5f5f5">
     <ScrollView
         style="@style/parent">

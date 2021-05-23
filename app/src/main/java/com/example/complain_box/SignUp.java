@@ -81,7 +81,6 @@ public class SignUp extends AppCompatActivity {
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
                 try {
                     JSONArray jsonArray=new JSONArray(response);
                     for(int i=0;i<jsonArray.length();i++) {
@@ -156,51 +155,55 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(SignUp.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    pd = new ProgressDialog(SignUp.this, R.style.MyAlertDialogStyle);
-                    pd.setTitle("Connecting Server");
-                    pd.setMessage("loading...");
-                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    pd.show();
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            pd.dismiss();
-                            if(response.trim().equals("Registration Successful But it need to be approved by the owner of the company admin")) {
-                                Toast.makeText(SignUp.this, "Registration Successful But it need to be approved by the owner of the company", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                            else if(response.trim().equals("Email already registered with us")){
-                                Toast.makeText(SignUp.this, ""+response, Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                Toast.makeText(SignUp.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            pd.dismiss();
-                            Toast.makeText(SignUp.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("email", email.getText().toString().trim());
-                            map.put("password", password.getText().toString().trim());
-                            map.put("company", company.getSelectedItem().toString().trim());
-                            map.put("name", name.getText().toString().trim());
-                            map.put("emp_id", emp_id.getText().toString().trim());
-                            return map;
-                        }
-                    };
-                    RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
-                    mque.add(stringRequest);
-                    // Intent intent=new Intent(MainActivity.this,Pending_Complaint.class);
-                    //startActivity(intent);
-
+                    signup();
                 }
+
+            }
+
+            private void signup() {
+                pd = new ProgressDialog(SignUp.this, R.style.MyAlertDialogStyle);
+                pd.setTitle("Connecting Server");
+                pd.setMessage("loading...");
+                pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pd.show();
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        pd.dismiss();
+                        if(response.trim().equals("Registration Successful But it need to be approved by the owner of the company admin")) {
+                            Toast.makeText(SignUp.this, "Registration Successful But it need to be approved by the owner of the company", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        else if(response.trim().equals("Email already registered with us")){
+                            Toast.makeText(SignUp.this, ""+response, Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(SignUp.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pd.dismiss();
+                        Toast.makeText(SignUp.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("email", email.getText().toString().trim());
+                        map.put("password", password.getText().toString().trim());
+                        map.put("company", company.getSelectedItem().toString().trim());
+                        map.put("name", name.getText().toString().trim());
+                        map.put("emp_id", emp_id.getText().toString().trim());
+                        return map;
+                    }
+                };
+                RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
+                mque.add(stringRequest);
+                // Intent intent=new Intent(MainActivity.this,Pending_Complaint.class);
+                //startActivity(intent);
 
             }
         });

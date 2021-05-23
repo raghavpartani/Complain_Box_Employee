@@ -7,7 +7,7 @@
         android:allowBackup="true"
         android:icon="@drawable/com"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/com"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -15,14 +15,14 @@
             android:label="My Complaints"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".raise_a_compalint"
+        <activity android:name=".RaiseComplaint"
             android:label="Raise Complaints"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Complain_raised_by_companions"
+        <activity android:name=".ComplainRaisedByCompanions"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".Login"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
