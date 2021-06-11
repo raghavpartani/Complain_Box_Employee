@@ -70,10 +70,12 @@ public class RaiseComplaint extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(category.getSelectedItem().toString().trim().equals("Other")){
                     customcategory.setEnabled(true);
+                    raise.setEnabled(true);
                 }
                 else {
                     customcategory.setEnabled(false);
                     customcategory.setText("");
+                    raise.setEnabled(true);
                 }
             }
 
@@ -92,13 +94,12 @@ public class RaiseComplaint extends AppCompatActivity {
              if(category.getSelectedItem().toString().trim().equals("Category")){
                  Toast.makeText(RaiseComplaint.this, "Please select a category", Toast.LENGTH_SHORT).show();
              }
-
              else if(category.getSelectedItem().toString().trim().equals("Other")){
                  if(customcategory.getText().toString().trim().equals("")){
                      customcategory.setError("Category is missing");
                  }
              }
-             else if(details.getText().toString().trim().equals("")){
+             if(details.getText().toString().trim().equals("")){
                  details.setError("Description is missing");
              }
              else if(sub.getText().toString().trim().equals("")){
@@ -111,64 +112,59 @@ public class RaiseComplaint extends AppCompatActivity {
                  details.setError("Desription can't be too small");
              }
              else if(b) {
-                 raise();
+                 //Toast.makeText(RaiseComplaint.this, "sds"+customcategory.getText().toString().trim(), Toast.LENGTH_SHORT).show();
+                 raise.setEnabled(false);
+                 pd = new ProgressDialog(RaiseComplaint.this, R.style.MyAlertDialogStyle);
+                 pd.setTitle("Connecting Server");
+                 pd.setMessage("loading...");
+                 pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                 pd.show();
+                 StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                     @Override
+                     public void onResponse(String response) {
+                         pd.dismiss();
+                         if(response.trim().equals("Raised Successfully")) {
+                             Toast.makeText(RaiseComplaint.this, "" + response, Toast.LENGTH_SHORT).show();
+                             finish();
+                         }
+                         else {
+                             raise.setEnabled(true);
+                             Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                         }
+                     }
+                 }, new Response.ErrorListener() {
+                     @Override
+                     public void onErrorResponse(VolleyError error) {
+                         raise.setEnabled(true);
+                         pd.dismiss();
+                         Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                     }
+                 }){
+                     @Nullable
+                     @Override
+                     protected Map<String, String> getParams() throws AuthFailureError {
+                         Map<String, String> map = new HashMap<>();
+                         map.put("email", email);
+                         map.put("name", name);
+                         map.put("company",company);
+                         map.put("emp_id",emp_id);
+                         map.put("subject", sub.getText().toString().trim());
+                         map.put("description",details.getText().toString().trim());
+                         if(!category.getSelectedItem().toString().trim().equals("Other")){
+                             map.put("category",category.getSelectedItem().toString().trim());
+                         }
+                         else {
+                             map.put("category", customcategory.getText().toString().trim());
+                         }
+                         return map;
+                     }
+                 };
+                 RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
+                 mque.add(stringRequest);
             }
              else{
                  Toast.makeText(RaiseComplaint.this, "please check your internet connection", Toast.LENGTH_SHORT).show();
              }
-         }
-
-         private void raise() {
-             raise.setEnabled(false);
-             pd = new ProgressDialog(RaiseComplaint.this, R.style.MyAlertDialogStyle);
-             pd.setTitle("Connecting Server");
-             pd.setMessage("loading...");
-             pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-             pd.show();
-             StringRequest stringRequest=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                 @Override
-                 public void onResponse(String response) {
-                     pd.dismiss();
-                     if(response.trim().equals("Raised Successfully")) {
-                         Toast.makeText(RaiseComplaint.this, "" + response, Toast.LENGTH_SHORT).show();
-                         finish();
-                     }
-                     else {
-
-                         raise.setEnabled(true);
-                         Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                     }
-                 }
-             }, new Response.ErrorListener() {
-                 @Override
-                 public void onErrorResponse(VolleyError error) {
-
-                     raise.setEnabled(true);
-                     pd.dismiss();
-                     Toast.makeText(RaiseComplaint.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                 }
-             }){
-                 @Nullable
-                 @Override
-                 protected Map<String, String> getParams() throws AuthFailureError {
-                     Map<String, String> map = new HashMap<>();
-                     map.put("email", email);
-                     map.put("name", name);
-                     map.put("company",company);
-                     map.put("emp_id",emp_id);
-                     map.put("subject", sub.getText().toString().trim());
-                     map.put("description",details.getText().toString().trim());
-                     if(category.getSelectedItem().toString().trim().equals("Other")){
-                         map.put("category",customcategory.getText().toString().trim());
-                     }
-                     else {
-                         map.put("category",category.getSelectedItem().toString().trim());
-                     }
-                     return map;
-                 }
-             };
-             RequestQueue mque = Volley.newRequestQueue(getApplicationContext());
-             mque.add(stringRequest);
          }
      });
     }
